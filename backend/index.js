@@ -1,38 +1,31 @@
-import express from "express";
-import { connect } from "./db.js";
-import { rootRouters } from "./src/routes/rootRouters.js";
+import express from 'express';
+import connect from './db.js';
+import rootRoutes from './src/routes/rootRoutes.js';
 
-const app = express()
 
-const port = 3000
-app.listen(port, ()=>{
-    console.log('Running port 3000')
-})
+const app = express();
 
-app.use(express.json())
+// Sử dụng middleware để phân tích cú pháp JSON
+app.use(express.json());
 
-app.use(rootRouters)
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Be running with port ${port}`);
+});
 
-// =======
-app.get('/get-users', async (req, res) => {
+app.use(rootRoutes)
+
+// Route để lấy thông tin người dùng
+app.get("/get-users", async (req, res) => {
     try {
-        // Thực hiện truy vấn SQL để lấy tất cả người dùng
         const [data] = await connect.query(`
             SELECT * FROM nguoi_dung
         `);
+        return res.send(data); // Trả về dữ liệu dưới dạng JSON
 
-        // Trả về kết quả dưới dạng JSON
-        res.status(200).json({
-            message: "Lấy danh sách người dùng thành công",
-            data: data,
-        });
     } catch (error) {
-        console.error(error);
+        error.status(500)
 
-        // Trả về thông báo lỗi nếu có lỗi xảy ra
-        res.status(500).json({
-            message: "Lỗi khi lấy danh sách người dùng",
-            error: error.message,
-        });
     }
+
 });

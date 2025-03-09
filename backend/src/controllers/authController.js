@@ -1,39 +1,13 @@
-
-
-import { connect } from "../models/connect.js";
-import initModels from "../models/init-models.js";
-
-const models = initModels(connect)
-
 export const authController = {
     register: async (req, res) => {
         try {
-            const { email, ho_ten, mat_khau } = req.body
-            const userExist = await models.nguoi_dung.findOne({
-                where: {
-                    email: email,
-                }
-            });
-            // check tài khoảng
-            if (userExist) {
-                res.status(400).json({ message: "Tài khoảng đã tồn tại, vui lòng đăng nhập" })
-            }
-            // mã hoá pass
+            const { email, mat_khau, ho_ten } = req.body; // Sửa 'emai' thành 'email'
+            console.log("du lieu", { email, mat_khau, ho_ten });
 
-            //craet user
-            const result = await models.nguoi_dung.create({
-                email: email,
-                ho_ten: ho_ten,
-                mat_khau: mat_khau
-            })
-            console.log(result)
-
-            console.log("value: ", { email, ho_ten, mat_khau })
-            res.status(200).json("Register");
-
+            res.status(200).json('register');  // Trả về phản hồi
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ error: `${error}` });
+            console.log(error);  // In lỗi ra console
+            res.status(500).json(`Error: ${error}`);  // Trả về lỗi
         }
-    },
+    }
 };
